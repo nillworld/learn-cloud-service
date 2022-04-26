@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: replication-1
+spec:
+  replicas: 1
+  selector:
+    app: podtheia
+  template:
+    metadata:
+        name: podtheia
+        labels:
+     	app: podtheia
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node1
+      containers:
+      - name: theia
+        image: gashirar/theia-kubernetes
+        volumeMounts:
+        - name: host-path
+          mountPath: /mount1   
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NO_AUTH
+          value: "true"
+      volumes:
+      - name: host-path
+        hostPath:
+          path: /node-volume
+          type: DirectoryOrCreate
