@@ -162,6 +162,45 @@
    yum install -y --disableexcludes=kubernetes kubeadm-1.15.5-0.x86_64 kubectl-1.15.5-0.x86_64 kubelet-1.15.5-0.x86_64
    ```
 
+### 6) 노드 생성을 위한 VM Clone 및 설정
+
+1. 이미지 복사를 위한 Master node shutdown
+
+   ```
+   shutdown now
+   ```
+
+2. VM 복사
+
+   1. VirtualBox UI를 통해 Master 선택 후 마우스 우클릭을 해서 [복제] 버튼 클릭
+   2. 이름 : k8s-node1, MAC 주소정책 : 모든 네트워크 어댑터의 새 MAC 주소 생성
+   3. 복제방식 : 완전한 복제
+
+3. node2도 반복
+
+4. Network 변경
+   1. VirtualBox UI에서 k8s-node1을 시작 시키면 뜨는 Console 창을 통해 아래 명령어 입력
+      ```
+      vi /etc/sysconfig/network-scripts/ifcfg-eth0
+      ```
+   2. IPADDR= 부분을 해당 Node의 IP (192.168.0.152)로 변경
+      ```
+      ...
+      DEVICE="etho0"
+      ONBOOT="yes"
+      IPADDR="192.168.0.31"
+      ...
+      ```
+   3. 네트워크 재시작
+      ```
+      systemctl restart network
+      ```
+   4. Host Name 변경
+      ```
+      hostnamectl set-hostname k8s-node1
+      ```
+   5. 이와 같은 방식으로 k8s-node2(192.168.0.153) 도 설정
+
 ---
 
 ## Replication Controller
