@@ -61,36 +61,41 @@
 
 1. SELinux을 permissive로 변경
 
-   ```
+   ```sh
    setenforce 0
    ```
 
 2. 리부팅시 다시 원복되기 때문에 아래 명령을 통해서 영구적으로 변경
 
-   ```
+   ```sh
    sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
    ```
 
 3. 설정 확인 - Current mode:permissive
-   ```
+
+   ```sh
    sestatus
    ```
 
 ### 4) 방화벽 해제 및 네트워크 설정
 
 1. firewalld 비활성화
-   ```
+
+   ```sh
    systemctl stop firewalld && systemctl disable firewalld
    ```
+
 2. NetworkManager 비활성화
-   ```
+
+   ```sh
     systemctl stop NetworkManager && systemctl disable NetworkManager
    ```
+
 3. iptables 커널 옵션 활성화
 
    - CentOS7 사용시 iptables가 무시되서 트래픽이 잘못 라우팅되는 문제가 발생할 수 있어, 아래와 같이 설정
 
-   ```
+   ```sh
    cat <<EOF >  /etc/sysctl.d/k8s.conf
    net.bridge.bridge-nf-call-ip6tables = 1
    net.bridge.bridge-nf-call-iptables = 1
@@ -101,8 +106,8 @@
 
 4. 쿠버네티스 YUM Repository 설정
 
-   ```
-   	 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+   ```sh
+   cat <<EOF > /etc/yum.repos.d/kubernetes.repo
    [kubernetes]
    name=Kubernetes
    baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
@@ -116,7 +121,8 @@
    ```
 
 5. host 등록
-   ```
+
+   ```sh
    cat << EOF >> /etc/hosts
    192.168.0.151 k8s-master
    192.168.0.152 k8s-node1
@@ -127,30 +133,34 @@
 ### 5) Docker 및 Kubernetes 설치
 
 1. 도커 설치 전에 필요한 패키지 설치
-   ```
+
+   ```sh
    yum install -y yum-utils device-mapper-persistent-data lvm2
    ```
+
 2. 도커 설치를 위한 저장소 를 설정
-   ```
+
+   ```sh
    yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
    ```
+
 3. 도커 패키지 설치
 
-   ```
+   ```sh
    yum update -y && yum install -y docker-ce-18.06.2.ce
 
    mkdir /etc/docker
    cat > /etc/docker/daemon.json <<EOF
    {
-   	"exec-opts": ["native.cgroupdriver=systemd"],
-   	"log-driver": "json-file",
-   	"log-opts": {
-   		"max-size": "100m"
-   	},
-   	"storage-driver": "overlay2",
-   	"storage-opts": [
-   		"overlay2.override_kernel_check=true"
-   	]
+    "exec-opts": ["native.cgroupdriver=systemd"],
+    "log-driver": "json-file",
+    "log-opts": {
+      max-size": "100m"
+    },
+    "storage-driver": "overlay2",
+    "storage-opts": [
+      "overlay2.override_kernel_check=true"
+    ]
    }
    EOF
 
@@ -158,7 +168,8 @@
    ```
 
 4. Kubernetes 설치
-   ```
+
+   ```sh
    yum install -y --disableexcludes=kubernetes kubeadm-1.15.5-0.x86_64 kubectl-1.15.5-0.x86_64 kubelet-1.15.5-0.x86_64
    ```
 
@@ -166,7 +177,7 @@
 
 1. 이미지 복사를 위한 Master node shutdown
 
-   ```
+   ```sh
    shutdown now
    ```
 
@@ -179,26 +190,35 @@
 3. node2도 반복
 
 4. Network 변경
+
    1. VirtualBox UI에서 k8s-node1을 시작 시키면 뜨는 Console 창을 통해 아래 명령어 입력
-      ```
+
+      ```sh
       vi /etc/sysconfig/network-scripts/ifcfg-eth0
       ```
+
    2. IPADDR= 부분을 해당 Node의 IP (192.168.0.152)로 변경
-      ```
+
+      ```sh
       ...
       DEVICE="etho0"
       ONBOOT="yes"
       IPADDR="192.168.0.31"
       ...
       ```
+
    3. 네트워크 재시작
-      ```
+
+      ```sh
       systemctl restart network
       ```
+
    4. Host Name 변경
-      ```
+
+      ```sh
       hostnamectl set-hostname k8s-node1
       ```
+
    5. 이와 같은 방식으로 k8s-node2(192.168.0.153) 도 설정
 
 ---
@@ -209,64 +229,30 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-name: replication-1
-spec:
-replicas: 1
-selector:
-  app: podtheia
-template:
-  metadata:
-    name: podtheia
-    labels:
-      app: podtheia
-  spec:
-    securityContext:
-      runAsUser: 1000
-      fsGroup: 1000
-    volumes:
-      - name: host-path
-        hostPath:
-          path: /node-volume
-          type: DirectoryOrCreate
-    nodeSelector:
-      kubernetes.io/hostname: k8s-node1
-    containers:
-      - name: theia
-        image: gashirar/theia-kubernetes
-        volumeMounts:
-          - name: host-path
-            mountPath: /home/project
-        ports:
-          - containerPort: 3000
-        env:
-          - name: NO_AUTH
-            value: "true"
-```
-
----
-
-## Node Port
-
-```yaml
-apiVersion: v1
-kind: ReplicationController
-metadata:
   name: replication-1
 spec:
   replicas: 1
   selector:
-    app: podtheia
+    app: theia-blue
   template:
     metadata:
-      name: podtheia
+      name: theia-blue
       labels:
-        app: podtheia
+        app: theia-blue
     spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      volumes:
+        - name: host-path
+          hostPath:
+            path: /node-volume
+            type: DirectoryOrCreate
       nodeSelector:
         kubernetes.io/hostname: k8s-node1
       containers:
         - name: theia
-          image: gashirar/theia-kubernetes
+          image: nilltobesoft/blue
           volumeMounts:
             - name: host-path
               mountPath: /home/project
@@ -275,9 +261,24 @@ spec:
           env:
             - name: NO_AUTH
               value: "true"
-      volumes:
-        - name: host-path
-          hostPath:
-            path: /node-volume
-            type: DirectoryOrCreate
+```
+
+---
+
+## Node Port
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodeport
+spec:
+  selector:
+    app: theia-blue
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30000
+  type: NodePort
+  externalTrafficPolicy: Local
 ```
