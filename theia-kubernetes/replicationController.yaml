@@ -5,28 +5,30 @@ metadata:
 spec:
   replicas: 1
   selector:
-    app: podtheia
+    app: theia-blue
   template:
     metadata:
-      name: podtheia
+      name: theia-blue
       labels:
-        app: podtheia
+        app: theia-blue
     spec:
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+      volumes:
+        - name: pvc-pv
+          persistentVolumeClaim:
+            claimName: pvc-01
       nodeSelector:
         kubernetes.io/hostname: k8s-node1
       containers:
         - name: theia
-          image: gashirar/theia-kubernetes
+          image: nilltobesoft/blue
           volumeMounts:
-            - name: host-path
-              mountPath: /mount1
+            - name: pvc-pv
+              mountPath: /home/project
           ports:
             - containerPort: 3000
           env:
             - name: NO_AUTH
               value: "true"
-      volumes:
-        - name: host-path
-          hostPath:
-            path: /node-volume
-            type: DirectoryOrCreate

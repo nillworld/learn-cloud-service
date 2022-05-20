@@ -93,3 +93,15 @@
         targetPort: 8080
     type: LoadBalancer
   ```
+
+</br>
+</br>
+
+> </br>
+> defalut 이름의 Namespace에서 svc-3 이름의 Service 조회
+>
+> ```sh
+>   kubectl get service svc-3 -n defalut
+> ```
+>
+> </br>
