@@ -37,6 +37,7 @@
 - pod가 재생성 될 때, 해당 node에 자원이 부족해서 다른 node에 pod가 생성 된다면 hostPath는 원래 마운트 했던node의 hostPath로 마운트 할 수 없다.(기존 node에 있는 volume을 새로운 node와 마운트하여 사용할 수 있겠지만 좋은 방법은 아님.)
 - hostPath는 pod에서 자신이 해당하는 node의 파일(설정파일 등)을 읽거나 쓸때 즉, node의 데이터를 pod에서 써야할 때 사용.
 - 마운트하려는 node의 volume directory는 사전에 생성되어 있어야 함.
+- `DirectoryOrCreate`옵션은, 주어진 경로에 아무것도 없다면, 필요에 따라 Kubelet이 가지고 있는 동일한 그룹과 소유권, 권한을 0755로 설정한 빈 디렉터리를 생성한다.
 
   ```yaml
   apiVersion: v1
