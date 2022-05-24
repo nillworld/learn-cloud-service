@@ -41,3 +41,19 @@
 
 - password는 위와 같은 방법으로 초기 값을 읽어와서 복붙.
   - `The password file will be automatically deleted in the first reconfigure run after 24 hours.` 이렇게 언급한 것과 같이 24시간 내 기본값은 삭제 되는 것 같다. 즉, 새로 비밀번호 설정 필요.
+
+## Hardware requirements
+
+- CPU: 4 Cores (500명까지)
+- Memory: 4 Gb (500명 까지)
+- Storage: 설치를 위해 2.5Gb 필요.
+  - CPU: 2 Cores, Memory: 4Gb의 VM에 설치하니 10분만에 많이 느려짐.
+
+### reference
+
+> install: \
+> <https://docs.gitlab.com/ee/install/docker.html#install-gitlab-using-docker-compose>
+> 하드웨어 요구 사항: \
+> <https://docs.gitlab.com/ee/install/requirements.html> \
+> enterprise 가격정책: \
+> <https://about.gitlab.com/pricing/self-managed/feature-comparison>
