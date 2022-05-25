@@ -62,7 +62,73 @@
 
 ## PVC/PV
 
+- local volume 뿐만 아니라 aws나 git 혹은 NFS를 사용하여 다른 서버와 연결하여 사용.
 - Pod에 영속성 있는 volume을 제공하기 위해 사용.
 - Persistent Volume(PV)는 Pod와 바로 연결되지 않고, Persistent Volume Claim(PVC)을 통해 연결.
 - 쿠버네티스는 Admin(쿠버네티스 운영자 - PV와 volume 관리) 영역과 User(Pod에 서비스 만들고 배포를 담당하는 배포담당자 - Pod와 PVC 관리) 영역으로 나누어서 관리.
 - Admin이 volume을 마운트하기 위해 PV를 만들어 놓으면, User가 PVC를 이용해 접근.
+
+### PV
+
+- 관리자에 의해 설정된 스토리지 볼륨 마운트 (볼륨 역할을 하는 스토리지를 마운트)
+- PV와 연결 했다면 해당 PV는 다른 PVC와 연결할 수 없음.
+
+  ```yaml
+  apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+  name: pv-03
+  spec:
+  capacity:
+    storage: 2G
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: /node-v
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - { key: kubernetes.io/hostname, operator: In, values: [k8s-node1] }
+  ```
+
+### PVC
+
+- Pod에서 PV와 연결할 때 쓰기 위한 요청
+
+  ````yaml
+  apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+  name: pvc-01
+  spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+   requests:
+     storage: 1G
+  storageClassName: ""
+  	 ```
+  ````
+
+  - `storageClassName: ""`옵션은 현재 만들어진 PV를 통해서만 연결한다는 의미.
+
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+  name: pod-volume-3
+  spec:
+  containers:
+  - name: container
+   image: kubetm/init
+   volumeMounts:
+   - name: pvc-pv
+     mountPath: /mount3
+  volumes:
+  - name : pvc-pv
+   persistentVolumeClaim:
+     claimName: pvc-01
+  ```
+
+  - `persistentVolumeClaim: claimName: pvc-01`처럼 pod생성시, pvc 마운팅

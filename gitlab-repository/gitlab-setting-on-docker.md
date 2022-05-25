@@ -49,11 +49,55 @@
 - Storage: 설치를 위해 2.5Gb 필요.
   - CPU: 2 Cores, Memory: 4Gb의 VM에 설치하니 10분만에 많이 느려짐.
 
+## Gitlab 비밀번호 재설정
+
+1. gitlab 컨테이너로 접근
+
+   ```sh
+    docker exec -it gitlab /bin/bash
+   ```
+
+2. 입력 후 콘솔이 로드될 때 까지 기달림.
+
+   ```sh
+    gitlab-rails console -e production
+   ```
+
+3. 사용자 찾기
+
+   ```sh
+    user = User.where(id: 1).first
+   ```
+
+4. 비밀번호 변경
+
+   ```sh
+    user.password = '[password]'
+    user.password_confirmation = '[password]'
+   ```
+
+5. 비밀번호 변경사항 저장
+
+   ```sh
+    user.save!
+   ```
+
+## Gitlab 연결
+
+1. local에서 ssh keygen 생성 및 복사 (명령어 `ssh-keygen`입력 후 키 생성)
+2. Gitlab 페이지에서 프로필 설정에 ssh keys에서 ssh key 등록
+3. 프로젝트 clone. (ex. `git clone http://192.168.0.154:89/gitlab-instance-4391a29b/test-gitlab-server.git`)
+
+</br>
+</br>
+
 ### reference
 
 > install: \
-> <https://docs.gitlab.com/ee/install/docker.html#install-gitlab-using-docker-compose>
+> <https://docs.gitlab.com/ee/install/docker.html#install-gitlab-using-docker-compose> \
 > 하드웨어 요구 사항: \
 > <https://docs.gitlab.com/ee/install/requirements.html> \
+> GitLab SSH Key 등록: \
+> <https://haejun0317.tistory.com/271> \
 > enterprise 가격정책: \
 > <https://about.gitlab.com/pricing/self-managed/feature-comparison>
