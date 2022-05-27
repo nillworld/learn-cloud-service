@@ -113,6 +113,10 @@
 
   - `storageClassName: ""`옵션은 현재 만들어진 PV를 통해서만 연결한다는 의미.
 
+  </br>
+
+  pod
+
   ```yaml
   apiVersion: v1
   kind: Pod
