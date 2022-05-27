@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: replication-2
+spec:
+  replicas: 1
+  selector:
+    app: theia2
+  template:
+    metadata:
+      name: theia2
+      labels:
+        app: theia2
+    spec:
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+      volumes:
+        - name: pvc-pv
+          persistentVolumeClaim:
+            claimName: pvc-02
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node2
+      containers:
+        - name: theia
+          image: nilltobesoft/blue2
+          volumeMounts:
+            - name: pvc-pv
+              mountPath: /home/project
+          ports:
+            - containerPort: 3000
