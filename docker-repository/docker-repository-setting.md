@@ -151,3 +151,9 @@ cp ~/certs/server.crt /etc/docker/certs.d/192.168.0.154:5000/
 ```
 
 - Docker는 hostname을 port와 같이 사용할 경우, docker가 어떤 인증서가 사용되어야 하는지에 대해서 추측하지 않는다. (192.168.0.101:5000, 127.0.0.1:8080 등) 따라서 포트 단위로 인증서를 제공해야 docker가 어떤 인증서를 사용해야 하는지 알 수 있다. 이를 위해서는 /etc/docker/certs.d/{hostname:port} 와 같이 'private container registry 서버의 IP 혹은 도메인명:포트번호' 로 구분되는 디렉터리 하위에 인증서를 저장해두어야 한다.
+
+### reference
+
+- https://waspro.tistory.com/532
+- https://watch-n-learn.tistory.com/43
+- https://wookiist.dev/128 - 도커 재시작 없이 CA인증서 업데이트
