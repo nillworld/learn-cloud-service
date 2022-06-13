@@ -54,7 +54,6 @@
       ```sh
       mkdir ~/certs
       cd ~/certs
-      openssl genrsa -des3 -out server.key 2048
       ```
 
    2. Private Key 생성
@@ -104,7 +103,7 @@
    2. 인증서 폴더를 마운트 하여 컨테이너 실행
 
       ```sh
-      docker run -itd --name=dockerRegi - ~/certs:/certs \
+      docker run -itd --name=dockerRegi -v ~/certs:/certs \
       -e REGISTRY_HTTP_ADDR=0.0.0.0:5000 \
       -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/server.crt \
       -e REGISTRY_HTTP_TLS_KEY=/certs/server.key -p 5000:5000 registry
@@ -156,4 +155,5 @@ cp ~/certs/server.crt /etc/docker/certs.d/192.168.0.154:5000/
 
 - https://waspro.tistory.com/532
 - https://watch-n-learn.tistory.com/43
+- https://figo2264.github.io/2017/11/28/docker-registry-with-self-signed-certificate/
 - https://wookiist.dev/128 - 도커 재시작 없이 CA인증서 업데이트
