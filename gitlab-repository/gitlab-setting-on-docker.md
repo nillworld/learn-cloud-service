@@ -88,6 +88,46 @@
 2. Gitlab 페이지에서 프로필 설정에 ssh keys에서 ssh key 등록
 3. 프로젝트 clone. (ex. `git clone http://192.168.0.154:89/gitlab-instance-4391a29b/test-gitlab-server.git`)
 
+## docker-compose setting
+
+### centOS 기준 docker-compose 설치
+
+1. Update Repositories and Packages
+
+   ```sh
+    sudo yum update &&\
+    sudo yum upgrade &&\
+    sudo yum install curl &&\
+   ```
+
+2. Download Docker Compose
+
+   ```sh
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+   ```
+
+3. Permission change
+
+   ```sh
+    sudo chmod +x /usr/local/bin/docker-compose
+   ```
+
+4. Check installed docker-compose
+
+   ```sh
+    docker–compose –-version
+   ```
+
+### Deploy docker registry using compose file
+
+1.  `docker-compose.yml` 파일 위치로 이동
+
+2.  start docker compose
+
+    ```sh
+     docker-compose up -d
+    ```
+
 </br>
 </br>
 
@@ -101,3 +141,5 @@
 > <https://haejun0317.tistory.com/271> \
 > enterprise 가격정책: \
 > <https://about.gitlab.com/pricing/self-managed/feature-comparison>
+> Docker compose install(centOS): \
+> <https://phoenixnap.com/kb/install-docker-compose-centos-7>
