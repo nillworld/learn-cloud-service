@@ -128,8 +128,9 @@
      docker-compose up -d
     ```
 
-</br>
-</br>
+- 로그 확인: `sudo docker-compose logs -f -t --tail="all"`
+  </br>
+  </br>
 
 ### reference
 

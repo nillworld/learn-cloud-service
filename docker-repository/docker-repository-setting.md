@@ -156,4 +156,5 @@ cp ~/certs/server.crt /etc/docker/certs.d/192.168.0.154:5000/
 - https://waspro.tistory.com/532
 - https://watch-n-learn.tistory.com/43
 - https://figo2264.github.io/2017/11/28/docker-registry-with-self-signed-certificate/
+- https://novemberde.github.io/post/2017/04/09/Docker_Registry_0/
 - https://wookiist.dev/128 - 도커 재시작 없이 CA인증서 업데이트
