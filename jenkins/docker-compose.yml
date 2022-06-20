@@ -1,0 +1,13 @@
+version: "3"
+services:
+  jenkins:
+    container_name: "jenkins"
+    image: "jenkins/jenkins:lts"
+    restart: always
+    ports:
+      - 8000:8080
+      - 50000:50000
+    volumes:
+      - /home/deploy/jenkins_v:/var/jenkins_home
+    environment:
+      TZ: "Asiz/Seoul"
