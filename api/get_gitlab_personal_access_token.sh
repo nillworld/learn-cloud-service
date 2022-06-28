@@ -27,6 +27,8 @@ body_header=$(curl -L -b cookies.txt "${gitlab_host}/-/profile/personal_access_t
 # Scrape the personal access token from the response HTML
 personal_access_token=$(echo $body_header | perl -ne 'print "$1\n" if /created-personal-access-token"[[:blank:]]value="(.+?)"/' | sed -n 1p)
 
-#  +++++ curl --header "Private-Token: ${personal_access_token}" http://192.168.0.154/api/v4/projects
+#  > curl --header "Private-Token: ${personal_access_token}" http://192.168.0.154/api/v4/projects
 
-#  curl --request POST --header "PRIVATE-TOKEN: ${personal_access_token}" "http://192.168.0.154/api/v4/users?email=apiset@gmail.com&password=1q2w3e4r.&username=tester&name=tester&reset_password=true"
+#  > curl --request POST --header "PRIVATE-TOKEN: ${personal_access_token}" "http://192.168.0.154/api/v4/users?email=apiset@gmail.com&password=1q2w3e4r.&username=tester&name=tester&reset_password=false&skip_confirmation=true"
+
+# skip email confirm - https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21630/diffs?commit_id=4668f5d49d491b73a8336b2131366e360f332a6d
