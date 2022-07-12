@@ -7,11 +7,13 @@
     <title>main.html</title>
   </head>
   <body>
-    <h1>main page</h1>
-
-    <p>
-      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Atque, ullam quos! Iste quae, molestiae vitae tenetur,
-      in a aperiam voluptatibus dicta qui doloribus libero suscipit optio delectus voluptas voluptatem impedit!
-    </p>
+    <form action="/ee" method="POST">
+      <div class="form-group">
+        <label>id</label>
+        <input type="text" class="form-control" name="id" />
+      </div>
+      <button type="submit" class="btn btn-outline-secondary">Submit</button>
+    </form>
+    <button class="test" onclick="test()">test</button>
   </body>
 </html>
