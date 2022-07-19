@@ -49,12 +49,6 @@ router.get("/token_list", async function (req, res, next) {
   console.log(__dirname);
 });
 
-router.get("/test3", async function (req, res, next) {
-  let users = await api.Users.projects(64);
-  res.json(users);
-  console.log(__dirname);
-});
-
 /* POST user sing-up */
 router.post("/create_user", (req, res) => {
   const createUser = new Promise((resolve, reject) => {
@@ -70,7 +64,7 @@ router.post("/create_user", (req, res) => {
   });
   const createProject = (user) =>
     new Promise((resolve, reject) => {
-      console.log("user.id", user.id);
+      console.log("user.id", user);
       resolve(
         api.Projects.create({
           userId: user.id,
@@ -80,12 +74,13 @@ router.post("/create_user", (req, res) => {
     });
   const createToken = (user) =>
     new Promise((resolve, reject) => {
+      console.log("@@@@@@@@@@@@@@@", typeof user.owner.id);
       resolve(
         api.UserImpersonationTokens.add({
-          userId: user.id,
+          userId: user.owner.id,
           name: "test",
-          expiresAt: "2023-10-10",
-          scopes: "api",
+          expiresAt: "2023-07-14T01:09:13.505Z",
+          scopes: ["api"],
         })
       );
     });
@@ -99,7 +94,7 @@ router.post("/create_user", (req, res) => {
         name: req.body.name,
         pw: req.body.pw,
         email: req.body.email,
-        projectname: user.name,
+        projectname: req.body.projectname,
         deployurl: `http://server.tobesoft.com/${req.body.id}/${req.body.projectname}`,
         repositoryurl: user.http_url_to_repo,
       });
@@ -108,7 +103,10 @@ router.post("/create_user", (req, res) => {
 
   console.log(req.body); // 사용자의 JSON 요청
   // res.send(createUser); // JSON 응답
-  createUser.then((result) => createProject(result)).then((result) => returnUserInfo(result));
+  createUser
+    .then((result) => createProject(result))
+    .then((result) => createToken(result))
+    .then((result) => returnUserInfo(result));
 });
 
 router.post("/test", async function (req, res) {
