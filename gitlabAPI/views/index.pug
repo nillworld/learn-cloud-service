@@ -29,10 +29,11 @@ block content
 	br
 	br
 	div
-		form(action="/token_list", method="get")
+		form(action="/testen", method="post")
 			div 
 				p User Name
 				input(type="text", name="username")
 			button(type="submit") user token(test)
+	
 	div
-		button(onclick='getUserList()') User list(test)
+		button(onclick='getUserList()') User list(test token)

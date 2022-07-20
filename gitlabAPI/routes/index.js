@@ -18,7 +18,7 @@ router.get("/", async function (req, res, next) {
 /* GET user list */
 router.get("/user_list", async function (req, res) {
   let users = await api.Users.all();
-  res.json(users.map((el) => el.username));
+  res.json(users[0]);
   console.log(__dirname);
 });
 
@@ -49,8 +49,14 @@ router.get("/token_list", async function (req, res, next) {
   console.log(__dirname);
 });
 
+router.post("/testen", async function (req, res) {
+  const token = await api.UserImpersonationTokens.add(64, "test2", ["api"], "2022-07-24T01:09:13.505Z");
+  console.log(token);
+});
+
 /* POST user sing-up */
 router.post("/create_user", (req, res) => {
+  let gitUrl = "";
   const createUser = new Promise((resolve, reject) => {
     resolve(
       api.Users.create({
@@ -74,35 +80,27 @@ router.post("/create_user", (req, res) => {
     });
   const createToken = (user) =>
     new Promise((resolve, reject) => {
-      console.log("@@@@@@@@@@@@@@@", typeof user.owner.id);
-      resolve(
-        api.UserImpersonationTokens.add({
-          userId: user.owner.id,
-          name: "test",
-          expiresAt: "2023-07-14T01:09:13.505Z",
-          scopes: ["api"],
-        })
-      );
+      gitUrl = user.http_url_to_repo;
+      resolve(api.UserImpersonationTokens.add(user.owner.id, "test", ["api"], "2023-07-24T01:09:13.505Z"));
     });
-  const returnUserInfo = (user) => {
-    console.log("result!", user);
-    return new Promise((resolve, reject) => {
+  const returnUserInfo = (user) =>
+    new Promise((resolve, reject) => {
+      console.log("?????", user);
       res.send({
         errorcode: 0,
         errormsg: "정상",
         id: req.body.id,
         name: req.body.name,
         pw: req.body.pw,
+        token: user.token,
         email: req.body.email,
         projectname: req.body.projectname,
         deployurl: `http://server.tobesoft.com/${req.body.id}/${req.body.projectname}`,
         repositoryurl: user.http_url_to_repo,
       });
     });
-  };
 
   console.log(req.body); // 사용자의 JSON 요청
-  // res.send(createUser); // JSON 응답
   createUser
     .then((result) => createProject(result))
     .then((result) => createToken(result))
