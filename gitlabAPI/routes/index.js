@@ -96,7 +96,7 @@ router.post("/create_user", (req, res) => {
         email: req.body.email,
         projectname: req.body.projectname,
         deployurl: `http://server.tobesoft.com/${req.body.id}/${req.body.projectname}`,
-        repositoryurl: user.http_url_to_repo,
+        repositoryurl: gitUrl,
       });
     });
 
@@ -125,3 +125,13 @@ router.post("/test", async function (req, res) {
 });
 
 module.exports = router;
+
+// ================================================
+
+// https://www.daleseo.com/js-window-fetch/
+
+/* 
+fetch("http://192.168.0.154/api/v4/projects",{method:"get", headers:{"PRIVATE-TOKEN": "U5-wN2wrryjziiSzpjgA"}}).then((response) =>
+  console.log(response.json())
+);
+ */
