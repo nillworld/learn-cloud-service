@@ -1,13 +1,7 @@
 extends layout
 
 block content
-	script.
-		function getUserList(){
-			location.href = "/user_list";
-		}
-		function toLoginPage(){
-			location.href = "/login";
-		}
+
 	h1= "회원가입"
 	
 	form(action="/create_user", method="post")
@@ -23,6 +17,3 @@ block content
 			p project name
 			input(type="text", name="projectname")
 		button(type="submit") submit
-
-	a(onclick='getUserList()') User list
-

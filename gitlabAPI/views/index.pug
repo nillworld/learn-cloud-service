@@ -10,30 +10,12 @@ block content
 		}
 	div 
 		p Welcome to #{title}
-	div
-		h1= "Login"
 
-	div
-		form(action="/login", method="get")
-			div 
-				p ID
-				input(type="text", name="id")
-				p PASSWORD
-				input(type="password", name="pw")
-			button(type="submit") signIn
-	br
-	br
 	div
 		button(onclick='toLoginPage()') sign up
 	br
 	br
 	br
+
 	div
-		form(action="/testen", method="post")
-			div 
-				p User Name
-				input(type="text", name="username")
-			button(type="submit") user token(test)
-	
-	div
-		button(onclick='getUserList()') User list(test token)
+		button(onclick='getUserList()') User list(for test)

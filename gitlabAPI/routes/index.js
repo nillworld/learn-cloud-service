@@ -18,40 +18,13 @@ router.get("/", async function (req, res, next) {
 /* GET user list */
 router.get("/user_list", async function (req, res) {
   let users = await api.Users.all();
-  res.json(users[0]);
+  res.json(users.map((el) => el.username));
   console.log(__dirname);
-});
-
-router.get("/login", (req, res, next) => {
-  const login = new Promise((resolve, reject) => {
-    let username = req.query.id;
-    console.log(username);
-
-    resolve(api.Users.username(username));
-    // // console.log(userInfo[0].id);
-  });
-  res.send(login);
 });
 
 router.get("/sign_up", function (req, res, next) {
   res.render("sign_up");
   console.log(__dirname);
-});
-
-router.get("/token_list", async function (req, res, next) {
-  let username = req.query.username;
-  console.log(username);
-  let userInfo = await api.Users.username(username);
-  console.log(userInfo[0].id);
-
-  let users = await api.UserImpersonationTokens.all(userInfo[0].id);
-  res.json(users);
-  console.log(__dirname);
-});
-
-router.post("/testen", async function (req, res) {
-  const token = await api.UserImpersonationTokens.add(64, "test2", ["api"], "2022-07-24T01:09:13.505Z");
-  console.log(token);
 });
 
 /* POST user sing-up */
@@ -107,31 +80,4 @@ router.post("/create_user", (req, res) => {
     .then((result) => returnUserInfo(result));
 });
 
-router.post("/test", async function (req, res) {
-  console.log("test page");
-
-  // let createToken = await api.UserImpersonationTokens.add({
-  //   userId: 64,
-  //   name: "test2",
-  //   expiresAt: "2022-07-14T01:09:13.505Z",
-  //   scopes: "api",
-  // });
-
-  let createToken = await api.UserImpersonationTokens.add(64, "test2", ["api"], "2022-07-14T01:09:13.505Z");
-
-  console.log(req.body); // 사용자의 JSON 요청
-  res.json(createToken); // JSON 응답
-  console.log(createToken);
-});
-
 module.exports = router;
-
-// ================================================
-
-// https://www.daleseo.com/js-window-fetch/
-
-/* 
-fetch("http://192.168.0.154/api/v4/projects",{method:"get", headers:{"PRIVATE-TOKEN": "U5-wN2wrryjziiSzpjgA"}}).then((response) =>
-  console.log(response.json())
-);
- */
