@@ -1,0 +1,28 @@
+extends layout
+
+block content
+	script.
+		function getUserList(){
+			location.href = "/user_list";
+		}
+		function toLoginPage(){
+			location.href = "/login";
+		}
+	h1= "회원가입"
+	
+	form(action="/create_user", method="post")
+		div 
+			p username (id)
+			input(type="text", name="id")
+			p password
+			input(type="password", name="pw")
+			p email 
+			input(type="text", name="email")
+			p name 
+			input(type="text", name="name")
+			p project name
+			input(type="text", name="projectname")
+		button(type="submit") submit
+
+	a(onclick='getUserList()') User list
+
