@@ -60,8 +60,8 @@ router.post("/create_user", (req, res) => {
     new Promise((resolve, reject) => {
       console.log("?????", user);
       res.send({
-        errorcode: 0,
-        errormsg: "정상",
+        errorCode: 0,
+        errorMessage: "정상",
         id: req.body.id,
         name: req.body.name,
         pw: req.body.pw,
