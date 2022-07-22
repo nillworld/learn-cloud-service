@@ -22,8 +22,15 @@ router.get("/user_list", async function (req, res) {
   console.log(__dirname);
 });
 
+/* GET sign up page */
 router.get("/sign_up", function (req, res, next) {
   res.render("sign_up");
+  console.log(__dirname);
+});
+
+/* GET delete user page */
+router.get("/delete_user", function (req, res, next) {
+  res.render("delete_user");
   console.log(__dirname);
 });
 
@@ -31,30 +38,53 @@ router.get("/sign_up", function (req, res, next) {
 router.post("/create_user", (req, res) => {
   let gitUrl = "";
   const createUser = new Promise((resolve, reject) => {
-    resolve(
-      api.Users.create({
-        email: req.body.email,
-        name: req.body.name,
-        username: req.body.id,
-        password: req.body.pw,
-        skip_confirmation: true,
+    api.Users.create({
+      email: req.body.email,
+      name: req.body.name,
+      username: req.body.id,
+      password: req.body.pw,
+      skip_confirmation: true,
+    })
+      .then((response) => {
+        resolve(response);
       })
-    );
+      .catch((error) =>
+        res.send({
+          errorCode: -200,
+          errorMessage: "Can not create git user.",
+        })
+      );
   });
   const createProject = (user) =>
     new Promise((resolve, reject) => {
       console.log("user.id", user);
-      resolve(
-        api.Projects.create({
-          userId: user.id,
-          name: req.body.projectname,
+      api.Projects.create({
+        userId: user.id,
+        name: req.body.projectname,
+      })
+        .then((response) => {
+          resolve(response);
         })
-      );
+        .catch((error) =>
+          res.send({
+            errorCode: -200,
+            errorMessage: "Can not create git project repository.",
+          })
+        );
     });
   const createToken = (user) =>
     new Promise((resolve, reject) => {
       gitUrl = user.http_url_to_repo;
-      resolve(api.UserImpersonationTokens.add(user.owner.id, "test", ["api"], "2023-07-24T01:09:13.505Z"));
+      api.UserImpersonationTokens.add(user.owner.id, "test", ["api"], "2023-07-24T01:09:13.505Z")
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) =>
+          res.send({
+            errorCode: -200,
+            errorMessage: "Can not create git Token.",
+          })
+        );
     });
   const returnUserInfo = (user) =>
     new Promise((resolve, reject) => {
@@ -78,6 +108,35 @@ router.post("/create_user", (req, res) => {
     .then((result) => createProject(result))
     .then((result) => createToken(result))
     .then((result) => returnUserInfo(result));
+});
+
+router.post("/remove_user", (req, res) => {
+  console.log("??????");
+
+  const userInfo = (username) =>
+    new Promise((resolve, reject) => {
+      api.Users.search(username)
+        .then((result) => {
+          if (result[0]) {
+            resolve(result);
+          } else {
+            reject(res.send(`Can not get '${username}' info for delete.`));
+          }
+        })
+        .catch(() => res.send(`Can not get '${username}' info for delete.`));
+    });
+  const deleteUser = (userInfo) =>
+    new Promise((resolve, reject) => {
+      api.Users.remove(userInfo[0].id)
+        .then((result) => {
+          resolve(result);
+        })
+        .catch(() => res.send(`Can not delete '${username}'.`));
+    });
+
+  userInfo(req.body.id)
+    .then((result) => deleteUser(result))
+    .then(() => res.send("Delete success"));
 });
 
 module.exports = router;

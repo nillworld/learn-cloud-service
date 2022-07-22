@@ -1,0 +1,11 @@
+extends layout
+
+block content
+
+	h1= "유저 삭제"
+	
+	form(action="/remove_user", method="post")
+		input(type="hidden", name="_method" value="DELETE")
+		p username (id)
+		input(type="text", name="id")
+		button(type="submit") submit

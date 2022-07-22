@@ -8,12 +8,18 @@ block content
 		function toLoginPage(){
 			location.href = "/sign_up";
 		}
+		function toDeleteUserPage(){
+			location.href = "/delete_user";
+		}
 	div 
 		p Welcome to #{title}
 
 	div
-		button(onclick='toLoginPage()') sign up
+		button(onclick='toLoginPage()') Sign Up
 	br
+	br
+	div
+		button(onclick='toDeleteUserPage()') Delete User
 	br
 	br
 
