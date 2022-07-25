@@ -110,7 +110,7 @@ router.post("/create_user", (req, res) => {
     .then((result) => returnUserInfo(result));
 });
 
-router.post("/remove_user", (req, res) => {
+router.delete("/remove_user", (req, res) => {
   console.log("??????");
 
   const userInfo = (username) =>
