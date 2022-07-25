@@ -120,10 +120,20 @@ router.delete("/remove_user", (req, res) => {
           if (result[0]) {
             resolve(result);
           } else {
-            reject(res.send(`Can not get '${username}' info for delete.`));
+            reject(
+              res.send({
+                errorCode: -200,
+                errorMessage: `Can not find the user '${username}'.`,
+              })
+            );
           }
         })
-        .catch(() => res.send(`Can not get '${username}' info for delete.`));
+        .catch(() =>
+          res.send({
+            errorCode: -200,
+            errorMessage: `Can not get '${username}' info for delete.`,
+          })
+        );
     });
   const deleteUser = (userInfo) =>
     new Promise((resolve, reject) => {
@@ -131,12 +141,23 @@ router.delete("/remove_user", (req, res) => {
         .then((result) => {
           resolve(result);
         })
-        .catch(() => res.send(`Can not delete '${username}'.`));
+        .catch(() =>
+          res.send({
+            errorCode: -200,
+            errorMessage: `Can not get '${username}' info for delete.`,
+          })
+        );
     });
 
   userInfo(req.body.id)
     .then((result) => deleteUser(result))
-    .then(() => res.send("Delete success"));
+    .then(() =>
+      res.send({
+        errorCode: -200,
+        errorMessage: "정상",
+        successMessage: "Delete success",
+      })
+    );
 });
 
 module.exports = router;
