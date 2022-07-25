@@ -6,7 +6,75 @@ const api = new git.Gitlab({
   token: "U5-wN2wrryjziiSzpjgA",
 });
 
-/* GET home page. */
+/**
+ * @swagger
+ *     components:
+ *         schemas:
+ *             Book:
+ *                 type: object
+ *                 required:
+ *                     - title
+ *                     - author
+ *                     - finished
+ *                 properties:
+ *                     id:
+ *                         type: integer
+ *                         description: The auto-generated id of the book.
+ *                     title:
+ *                         type: string
+ *                         description: The title of your book.
+ *                     author:
+ *                         type: string
+ *                         description: Who wrote the book?
+ *                     finished:
+ *                         type: boolean
+ *                         description: Have you finished reading it?
+ *                     createdAt:
+ *                         type: string
+ *                         format: date
+ *                         description: The date of the record creation.
+ *                     example:
+ *                         title: The Pragmatic Programmer
+ *                         author: Andy Hunt / Dave Thomas
+ *                         finished: true
+ */
+/**
+ *  @swagger
+ *  tags:
+ *    name: Books
+ *    description: API to manage your books.
+ */
+/**
+ *  @swagger
+ *  paths:
+ *   /books:
+ *     get:
+ *       summary: Lists all the books
+ *       tags: [Books]
+ *       responses:
+ *         "200":
+ *           description: The list of books.
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Book'
+ *     post:
+ *       summary: Creates a new book
+ *       tags: [Books]
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Book'
+ *       responses:
+ *         "200":
+ *           description: The created book.
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/Book'
+ */
 router.get("/", async function (req, res, next) {
   let users = await api.Users.all();
   res.render("index", {
@@ -117,7 +185,8 @@ router.delete("/remove_user", (req, res) => {
     new Promise((resolve, reject) => {
       api.Users.search(username)
         .then((result) => {
-          if (result[0]) {
+          if (result.length === 1) {
+            console.log(username, result[0]);
             resolve(result);
           } else {
             reject(
@@ -139,6 +208,7 @@ router.delete("/remove_user", (req, res) => {
     new Promise((resolve, reject) => {
       api.Users.remove(userInfo[0].id)
         .then((result) => {
+          // console.log(userInfo);
           resolve(result);
         })
         .catch(() =>
@@ -153,7 +223,7 @@ router.delete("/remove_user", (req, res) => {
     .then((result) => deleteUser(result))
     .then(() =>
       res.send({
-        errorCode: -200,
+        errorCode: 0,
         errorMessage: "정상",
         successMessage: "Delete success",
       })
