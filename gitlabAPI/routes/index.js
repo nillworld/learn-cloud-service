@@ -6,84 +6,148 @@ const api = new git.Gitlab({
   token: "U5-wN2wrryjziiSzpjgA",
 });
 
-/**
+/** Schemas
  * @swagger
  *     components:
  *         schemas:
- *             Book:
+ *             UserList:
+ *                 type: array
+ *                 items:
+ *                     type: string
+ *                 example:
+ *                     [userName1, userName2]
+ *
+ *             CreateUserRequest:
  *                 type: object
  *                 required:
- *                     - title
- *                     - author
- *                     - finished
+ *                     - id
+ *                     - name
+ *                     - pw
+ *                     - token
+ *                     - email
+ *                     - projectname
  *                 properties:
  *                     id:
+ *                         type: string
+ *                         description: what is your username(id)?
+ *                     name:
+ *                         type: string
+ *                         description: what is your name?
+ *                     pw:
+ *                         type: string
+ *                         description: what is password for sing-in?
+ *                     email:
+ *                         type: string
+ *                         description: what is your email?
+ *                     projectname:
+ *                         type: string
+ *                         description: which project name world you create?
+ *                 example:
+ *                     id: tobeprogrammer
+ *                     name: 투비
+ *                     pw: 1234qwer
+ *                     email: tobeprogrammer@tobesoft.com
+ *                     projectname: New project
+ *
+ *             CreateUserResponse:
+ *                 type: object
+ *                 properties:
+ *                     errorCode:
  *                         type: integer
- *                         description: The auto-generated id of the book.
- *                     title:
+ *                         description: errorCode[0] = 정상,
+ *                                      errorCode[-200] = git 인증 오류
+ *                     errorMessage:
  *                         type: string
- *                         description: The title of your book.
- *                     author:
+ *                         description: describe the error message.
+ *                     id:
  *                         type: string
- *                         description: Who wrote the book?
- *                     finished:
- *                         type: boolean
- *                         description: Have you finished reading it?
- *                     createdAt:
+ *                         description: user's userName(id)
+ *                     name:
  *                         type: string
- *                         format: date
- *                         description: The date of the record creation.
- *                     example:
- *                         title: The Pragmatic Programmer
- *                         author: Andy Hunt / Dave Thomas
- *                         finished: true
+ *                         description: user's name
+ *                     pw:
+ *                         type: string
+ *                         description: user's password
+ *                     token:
+ *                         type: string
+ *                         description: user's access token
+ *                     email:
+ *                         type: string
+ *                         description: user's email
+ *                     projectname:
+ *                         type: string
+ *                         description: user's project name which is created.
+ *                     deployurl:
+ *                         type: string
+ *                         description: project deploy URL.
+ *                     repositoryurl:
+ *                         type: string
+ *                         description: project repository URL.
+ *                 example:
+ *                     errorCode: 0
+ *                     errorMessage: 정상
+ *                     id: tobeprogrammer
+ *                     name: 투비
+ *                     pw: 1234qwer
+ *                     token: fvekljgj3egi49ipgjtfjggds0
+ *                     email: tobeprogrammer@tobesoft.com
+ *                     projectname: New project
+ *                     deployurl: https://service.tobesoft.com/tobeprogrammer/newproject
+ *                     repositoryurl: https://gitlab.tobesoft.com/tobeprogrammer/newprojec
+ *
+ *             UserDeleteRequest:
+ *                 type: object
+ *                 required:
+ *                     - id
+ *                 properties:
+ *                     id:
+ *                         type: string
+ *                         description: user's userName(id)
+ *                 example:
+ *                     id: tobeprogrammer
+ *             UserDeleteResponse:
+ *                 type: object
+ *                 properties:
+ *                     errorCode:
+ *                         type: integer
+ *                         description: errorCode[0] = 정상,
+ *                                      errorCode[-200] = git 인증 오류
+ *                     errorMessage:
+ *                         type: string
+ *                         description: describe the error message.
+ *                 example:
+ *                     errorCode: 0
+ *                     errorMessage: 정상
  */
-/**
+
+/** Tags
  *  @swagger
  *  tags:
- *    name: Books
- *    description: API to manage your books.
- */
-/**
- *  @swagger
- *  paths:
- *   /books:
- *     get:
- *       summary: Lists all the books
- *       tags: [Books]
- *       responses:
- *         "200":
- *           description: The list of books.
- *           content:
- *             application/json:
- *               schema:
- *                 $ref: '#/components/schemas/Book'
- *     post:
- *       summary: Creates a new book
- *       tags: [Books]
- *       requestBody:
- *         required: true
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Book'
- *       responses:
- *         "200":
- *           description: The created book.
- *           content:
- *             application/json:
- *               schema:
- *                 $ref: '#/components/schemas/Book'
+ *    name: User
+ *    description: API to manage Gitlab Users
  */
 router.get("/", async function (req, res, next) {
-  let users = await api.Users.all();
   res.render("index", {
     title: "Tobesoft",
   });
   console.log(__dirname);
 });
 
-/* GET user list */
+/** GET user list
+ *  @swagger
+ *  paths:
+ *   /user_list:
+ *     get:
+ *       summary: Lists all Users
+ *       tags: [User]
+ *       responses:
+ *         "200":
+ *           description: The list of user's usernames.
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/UserList'
+ */
 router.get("/user_list", async function (req, res) {
   let users = await api.Users.all();
   res.json(users.map((el) => el.username));
@@ -102,7 +166,27 @@ router.get("/delete_user", function (req, res, next) {
   console.log(__dirname);
 });
 
-/* POST user sing-up */
+/** POST user sing-up
+ * 	@swagger
+ * 	paths:
+ *   /create_user:
+ *     post:
+ *       summary: Creates a User and repository
+ *       tags: [User]
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CreateUserRequest'
+ *       responses:
+ *         "200":
+ *           description: The created User.
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/CreateUserResponse'
+ */
 router.post("/create_user", (req, res) => {
   let gitUrl = "";
   const createUser = new Promise((resolve, reject) => {
@@ -178,9 +262,28 @@ router.post("/create_user", (req, res) => {
     .then((result) => returnUserInfo(result));
 });
 
+/** DELETE user and user project
+ * 	@swagger
+ * 	paths:
+ *   /remove_user:
+ *     post:
+ *       summary: Delete the user
+ *       tags: [User]
+ *       requestBody:
+ *         required: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserDeleteRequest'
+ *       responses:
+ *         "200":
+ *           description: Delete the user success.
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 $ref: '#/components/schemas/UserDeleteResponse'
+ */
 router.delete("/remove_user", (req, res) => {
-  console.log("??????");
-
   const userInfo = (username) =>
     new Promise((resolve, reject) => {
       api.Users.search(username)
@@ -225,7 +328,6 @@ router.delete("/remove_user", (req, res) => {
       res.send({
         errorCode: 0,
         errorMessage: "정상",
-        successMessage: "Delete success",
       })
     );
 });
