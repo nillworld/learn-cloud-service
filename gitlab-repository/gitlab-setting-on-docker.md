@@ -115,7 +115,7 @@
 4. Check installed docker-compose
 
    ```sh
-    docker–compose –-version
+    docker-compose --version
    ```
 
 ### Deploy docker registry using compose file
