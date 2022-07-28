@@ -238,22 +238,20 @@ router.post("/create_user", (req, res) => {
           })
         );
     });
-  const returnUserInfo = (user) =>
-    new Promise((resolve, reject) => {
-      console.log("?????", user);
-      res.send({
-        errorCode: 0,
-        errorMessage: "정상",
-        id: req.body.id,
-        name: req.body.name,
-        pw: req.body.pw,
-        token: user.token,
-        email: req.body.email,
-        projectname: req.body.projectname,
-        deployurl: `http://server.tobesoft.com/${req.body.id}/${req.body.projectname}`,
-        repositoryurl: gitUrl,
-      });
+  const returnUserInfo = (user) => {
+    res.send({
+      errorCode: 0,
+      errorMessage: "정상",
+      id: req.body.id,
+      name: req.body.name,
+      pw: req.body.pw,
+      token: user.token,
+      email: req.body.email,
+      projectname: req.body.projectname,
+      deployurl: `http://server.tobesoft.com/${req.body.id}/${req.body.projectname}`,
+      repositoryurl: gitUrl,
     });
+  };
 
   console.log(req.body); // 사용자의 JSON 요청
   createUser
