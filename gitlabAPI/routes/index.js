@@ -2,8 +2,8 @@ const express = require("express");
 const git = require("@gitbeaker/node");
 const router = express.Router();
 const api = new git.Gitlab({
-  host: "http://192.168.0.154/",
-  token: "U5-wN2wrryjziiSzpjgA",
+  host: "http://gitlab.tobedevops.com:19080/",
+  token: "AH83S5johoj43NPvVfCo",
 });
 
 /** Schemas
@@ -44,7 +44,7 @@ const api = new git.Gitlab({
  *                         description: which project name world you create?
  *                 example:
  *                     id: tobeprogrammer
- *                     name: 투비
+ *                     name: tobe
  *                     pw: 1234qwer
  *                     email: tobeprogrammer@tobesoft.com
  *                     projectname: New project
@@ -54,7 +54,7 @@ const api = new git.Gitlab({
  *                 properties:
  *                     errorCode:
  *                         type: integer
- *                         description: errorCode[0] = 정상,
+ *                         description: errorCode[0] = Success,
  *                                      errorCode[-200] = git 인증 오류
  *                     errorMessage:
  *                         type: string
@@ -85,9 +85,9 @@ const api = new git.Gitlab({
  *                         description: project repository URL.
  *                 example:
  *                     errorCode: 0
- *                     errorMessage: 정상
+ *                     errorMessage: Success
  *                     id: tobeprogrammer
- *                     name: 투비
+ *                     name: tobe
  *                     pw: 1234qwer
  *                     token: fvekljgj3egi49ipgjtfjggds0
  *                     email: tobeprogrammer@tobesoft.com
@@ -110,14 +110,14 @@ const api = new git.Gitlab({
  *                 properties:
  *                     errorCode:
  *                         type: integer
- *                         description: errorCode[0] = 정상,
+ *                         description: errorCode[0] = Success,
  *                                      errorCode[-200] = git 인증 오류
  *                     errorMessage:
  *                         type: string
  *                         description: describe the error message.
  *                 example:
  *                     errorCode: 0
- *                     errorMessage: 정상
+ *                     errorMessage: tobeprogrammer deleted
  */
 
 /** Tags
@@ -136,7 +136,7 @@ router.get("/", async function (req, res, next) {
 /** GET user list
  *  @swagger
  *  paths:
- *   /user_list:
+ *   /user-list:
  *     get:
  *       summary: Lists all Users
  *       tags: [User]
@@ -148,28 +148,28 @@ router.get("/", async function (req, res, next) {
  *               schema:
  *                 $ref: '#/components/schemas/UserList'
  */
-router.get("/user_list", async function (req, res) {
+router.get("/user-list", async function (req, res) {
   let users = await api.Users.all();
   res.json(users.map((el) => el.username));
   console.log(__dirname);
 });
 
 /* GET sign up page */
-router.get("/sign_up", function (req, res, next) {
-  res.render("sign_up");
+router.get("/sign-up", function (req, res, next) {
+  res.render("sign-up");
   console.log(__dirname);
 });
 
 /* GET delete user page */
-router.get("/delete_user", function (req, res, next) {
-  res.render("delete_user");
+router.get("/delete-user", function (req, res, next) {
+  res.render("delete-user");
   console.log(__dirname);
 });
 
 /** POST user sing-up
  * 	@swagger
  * 	paths:
- *   /create_user:
+ *   /user:
  *     post:
  *       summary: Creates a User and repository
  *       tags: [User]
@@ -187,7 +187,7 @@ router.get("/delete_user", function (req, res, next) {
  *               schema:
  *                 $ref: '#/components/schemas/CreateUserResponse'
  */
-router.post("/create_user", (req, res) => {
+router.post("/create-user", (req, res) => {
   let gitUrl = "";
   const createUser = new Promise((resolve, reject) => {
     api.Users.create({
@@ -263,8 +263,8 @@ router.post("/create_user", (req, res) => {
 /** DELETE user and user project
  * 	@swagger
  * 	paths:
- *   /remove_user:
- *     post:
+ *   /user:
+ *     delete:
  *       summary: Delete the user
  *       tags: [User]
  *       requestBody:
@@ -281,7 +281,7 @@ router.post("/create_user", (req, res) => {
  *               schema:
  *                 $ref: '#/components/schemas/UserDeleteResponse'
  */
-router.delete("/remove_user", (req, res) => {
+router.delete("/user", (req, res) => {
   const userInfo = (username) =>
     new Promise((resolve, reject) => {
       api.Users.search(username)
@@ -325,7 +325,7 @@ router.delete("/remove_user", (req, res) => {
     .then(() =>
       res.send({
         errorCode: 0,
-        errorMessage: "정상",
+        errorMessage: `'${req.body.id}' deleted`,
       })
     );
 });
